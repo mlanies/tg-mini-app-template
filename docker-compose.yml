@@ -1,15 +1,17 @@
-version: "3.9"
-
 services:
-
   # Bot API service
   bot-api:
     environment:
-      TELEGRAM_WEB_APP_URL: https://${NGROK_DOMAIN}
+      TELEGRAM_WEB_APP_URL: https://salon.2gc.app/
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      DATABASE_URL: postgres://salon_user:salon_password@db:5432/manicure_salon?sslmode=disable
     restart: on-failure
     build:
       context: ./api
+    ports:
+      - "3001:3000" # API сервис на внутреннем порту 3000, проксируется на 3001 хоста для отладки (опционально)
+    depends_on:
+      - db
 
   # Bot UI in development mode
   bot-ui:
@@ -22,6 +24,8 @@ services:
     build:
       context: ./ui
       dockerfile: dev.dockerfile
+    ports:
+      - "3002:3000" # UI сервис на внутреннем порту 3000, проксируется на 3002 хоста для отладки (опционально)
 
   # Nginx proxy to forward request to UI and API
   dev-proxy:
@@ -33,11 +37,21 @@ services:
     restart: on-failure
     volumes:
       - ./proxy.template:/etc/nginx/templates/default.conf.template
+    ports:
+      - "3000:3000" # Главный прокси-сервис доступен на порту 3000
 
-  # Ngrok service
-  ngrok:
-    image: ngrok/ngrok:alpine
+  # PostgreSQL Database
+  db:
+    image: postgres:15
+    restart: always
     environment:
-      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
-    restart: on-failure
-    command: ["http", "--domain=${NGROK_DOMAIN}", "dev-proxy:3000", "--log=stdout"]
+      POSTGRES_USER: salon_user
+      POSTGRES_PASSWORD: salon_password
+      POSTGRES_DB: manicure_salon
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

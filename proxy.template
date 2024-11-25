@@ -1,29 +1,26 @@
 server {
-  listen ${PORT};
-  server_name  localhost;
+  listen 3000;
+  server_name localhost;
 
-  # This is required for dynamic containers
-  # Otherwise nginx will use IPs from DNS cache
-  resolver 127.0.0.11 valid=1s;
-  set $api_url ${API_URL};
-  set $ui_url ${UI_URL};
-
+  # Проксирование запросов к API
   location /api/ {
-    rewrite ^/api(/.*)$ $1 break;
-    proxy_pass $api_url;
-  }
-
-  location = /api {
-    rewrite ^/api$ / break;
-    proxy_pass $api_url;
-  }
-
-  # Commands below proxy_pass allow WebSockets 
-  # Which are required for React Fast Refresh
-  location / {
-    proxy_pass $ui_url;
+    proxy_pass http://bot-api:3000; # Используйте внутренний порт API сервиса
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+  }
+
+  # Проксирование запросов к UI
+  location / {
+    proxy_pass http://bot-ui:3000; # Используйте внутренний порт UI сервиса
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
   }
 }
