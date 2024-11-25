@@ -1,3 +1,5 @@
-Dockerfile
-.gitignore
-.dockerignore
+# Исключаем каталоги сборки и конфиденциальные данные
+node_modules
+dist
+.env
+.git

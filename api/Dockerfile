@@ -8,12 +8,12 @@ WORKDIR /build
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Копируем исходный код
+# Копируем весь исходный код в рабочую директорию
 COPY . ./
 
-# Сборка
+# Сборка приложения
 ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64
-RUN go build -ldflags="-s -w" -o main ./main.go
+RUN go build -ldflags="-s -w" -o main main.go
 
 # Финальный образ
 FROM alpine:3.18

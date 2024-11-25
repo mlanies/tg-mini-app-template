@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"tg-mini-app-template/api/database"
-	"tg-mini-app-template/api/handlers"
+	"github.com/mlanies/tg-mini-app-template/api/database"
+	"github.com/mlanies/tg-mini-app-template/api/handlers"
 )
 
 func main() {
