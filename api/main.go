@@ -41,6 +41,7 @@ func main() {
 	mux.HandleFunc("/api/appointments", handlers.AppointmentsHandler(db))
 	mux.HandleFunc("/api/services", handlers.ServicesHandler(db))
 	mux.HandleFunc("/api/masters", handlers.MastersHandler(db))
+	mux.HandleFunc("/api/masters/services", handlers.ServicesByMasterHandler(db))
 
 	// Оберните маршруты в CORS Middleware
 	handler := handlers.CorsMiddleware(mux)

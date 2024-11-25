@@ -92,16 +92,18 @@ function App() {
   };
 
   return (
-    <div className="container" id="online-base-container">
-      <div className="online-header2 bgrecolor">
-        <div className="wrap-cont">
-          <a className="back" href="/kiyanitsa/priceback?cid=uri2bchk8vdvk63eui1ip7vk5o"></a>
-          <div className="title">
-            <div>Выбор {selectedMaster ? 'услуг' : 'мастера'}</div>
+    <div className="container mx-auto py-8" id="online-base-container">
+      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg shadow-lg mb-6">
+        <div className="flex items-center justify-between">
+          <a className="text-white font-bold text-lg hover:underline" href="/kiyanitsa/priceback?cid=uri2bchk8vdvk63eui1ip7vk5o">
+            ← Назад
+          </a>
+          <div className="text-center">
+            <h1 className="text-2xl font-semibold">{selectedMaster ? 'Выбор услуг' : 'Выбор мастера'}</h1>
             <small>{user ? `${user.first_name} ${user.last_name}` : ""}</small>
           </div>
-          <div className="logo">
-            <img src={telegramLogo} className="logo telegram" alt="Telegram logo" />
+          <div className="flex-shrink-0">
+            <img src={telegramLogo} className="w-12 h-12 rounded-full shadow-md" alt="Telegram logo" />
           </div>
         </div>
       </div>
@@ -110,26 +112,20 @@ function App() {
         {/* Отображение мастеров или услуг */}
         {selectedMaster === null ? (
           <div className="online-masters">
-            <div className="online-block online-services-wrap active">
-              <div className="category bgrecolor">
-                <div>Выберите мастера<span className="count"></span><span className="caret2"></span></div>
-              </div>
-              <div className="masters blkrecolor">
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <h2 className="text-lg font-bold mb-4">Выберите мастера</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loading ? (
                   <p>Загрузка мастеров...</p>
                 ) : (
                   masters.map((master) => (
                     <div
                       key={master.id}
-                      className="master border p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transition-all"
+                      className="border p-4 rounded-lg shadow-md cursor-pointer hover:bg-blue-50 transition-all"
                       onClick={() => handleMasterSelect(master.id)}
                     >
-                      <div className="data">
-                        <div className="name font-bold text-lg">{master.name}</div>
-                        <div className="info text-gray-600">
-                          Опыт работы: {master.experience} лет
-                        </div>
-                      </div>
+                      <h3 className="font-bold text-xl mb-2">{master.name}</h3>
+                      <p className="text-gray-600">Опыт работы: {master.experience} лет</p>
                     </div>
                   ))
                 )}
@@ -138,28 +134,20 @@ function App() {
           </div>
         ) : (
           <div className="online-services">
-            <div className="online-block online-services-wrap active">
-              <div className="category bgrecolor">
-                <div>Новые услуги<span className="count"></span><span className="caret2"></span></div>
-              </div>
-              <div className="services blkrecolor">
+            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <h2 className="text-lg font-bold mb-4">Выберите услуги</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {loading ? (
                   <p>Загрузка услуг...</p>
                 ) : (
                   services.map((service) => (
                     <div
                       key={service.id}
-                      className={`service ${selectedServices.includes(service.id) ? 'active' : ''} border p-4 rounded-lg shadow-md cursor-pointer hover:bg-gray-100 transition-all`}
-                      data-id={service.id}
+                      className={`border p-4 rounded-lg shadow-md cursor-pointer hover:bg-blue-50 transition-all ${selectedServices.includes(service.id) ? 'bg-blue-100 border-blue-400' : 'border-gray-200'}`}
                       onClick={() => handleServiceSelect(service.id)}
                     >
-                      <div className="data">
-                        <div className="name">{service.name}</div>
-                        <div className="info">
-                          <span>от {service.price} ₽,</span>
-                          <span>{service.duration} мин.</span>
-                        </div>
-                      </div>
+                      <h3 className="font-bold text-xl mb-2">{service.name}</h3>
+                      <p className="text-gray-600">от {service.price} ₽, {service.duration} мин.</p>
                     </div>
                   ))
                 )}
@@ -170,16 +158,13 @@ function App() {
 
         {/* Кнопка для продолжения */}
         {selectedMaster !== null && (
-          <div className="navbar-fixed-bottom" id="online-dialog-next">
-            <div className="container vertical-align">
+          <div className="fixed bottom-0 left-0 w-full bg-white shadow-lg p-4">
+            <div className="flex justify-center">
               <button
-                type="button"
-                className="text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                onClick={handleProceedBooking}
+                className="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
               >
-                Purple to Blue
-              </button>
-              <button onClick={handleProceedBooking} className="online-def-btn bgrecolor">
-                <span>Продолжить</span>
+                Продолжить
               </button>
             </div>
           </div>
